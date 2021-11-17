@@ -1,0 +1,64 @@
+# API-first development with OpenAPI
+# This file will be used at compile time to generate Spring-MVC endpoint stubs using openapi-generator
+openapi: '3.0.1'
+info:
+  title: 'client'
+  version: 0.0.1
+servers:
+  - url: http://localhost:8081/api
+    description: Development server
+  - url: https://localhost:8081/api
+    description: Development server with TLS Profile
+tags:
+  - name: chachkie
+    description: Chachkies
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+paths:
+  /chachkies:
+    get:
+      tags:
+        - chachkie
+      summary: Find all chachkies
+      description: Returns all chachkies
+      operationId: getChachkies
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chachkie'
+components:
+  schemas:
+    Chachkie:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Object id
+        latitude:
+          type: number
+          description: Frequency Min
+        longitude:
+          type: number
+          description: Frequency Max
+  responses:
+    Problem:
+      description: error occurred - see status code and problem object for more information.
+      content:
+        'application/problem+json':
+          schema:
+            $ref: 'https://opensource.zalando.com/problem/schema.yaml#/Problem'
+
+#  securitySchemes:
+#    jwt:
+#      type: http
+#      description: JWT Authentication
+#      scheme: bearer
+#      bearerFormat: JWT
+#security:
+#  - jwt: []

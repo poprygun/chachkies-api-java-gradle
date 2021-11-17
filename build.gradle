@@ -1,0 +1,64 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.5.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.openapi.generator' version '5.3.0'
+}
+
+compileJava.dependsOn('openApiGenerate')
+
+group = 'io.microsamples.openapi'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation "org.springframework.boot:spring-boot-starter-web"
+	implementation "org.springdoc:springdoc-openapi-ui:${springdocOpenapiUiVersion}"
+	implementation "org.openapitools:jackson-databind-nullable:${jacksonDatabindNullableVersion}"
+	implementation "io.swagger:swagger-annotations:1.6.2"
+	compileOnly "org.projectlombok:lombok"
+	annotationProcessor "org.projectlombok:lombok"
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
+}
+
+test {
+	useJUnitPlatform()
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir "$buildDir/generated/src/main/java"
+		}
+	}
+}
+
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = "$rootDir/specs/api.yaml".toString()
+	outputDir = "$buildDir/generated".toString()
+	apiPackage = "io.microsamples.openapi.chachkies.api"
+	invokerPackage = "io.microsamples.openapi.chachkies.invoker"
+	modelPackage = "io.microsamples.openapi.chachkies.model"
+	generateApiDocumentation = false
+	ignoreFileOverride = "$rootDir/.openapi-generator-ignore"
+	configOptions = [
+			dateLibrary: "java8",
+			ignoreSwagger: "true",
+			interfaceOnly: "true"
+	]
+}
+
+compileJava {
+	source += sourceSets.main.java
+}
